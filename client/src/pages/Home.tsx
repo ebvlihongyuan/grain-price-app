@@ -4,8 +4,9 @@
  * 
  * 设计理念：农业数据驾驶舱
  * - 地区优先：首屏展示七个主要地区的玉米收购价格对比
- * - 工厂追踪：支持按工厂查看详细收购价格和历史数据
- * - 实时更新：每日更新价格，显示涨跌幅和变化趋势
+ * - 企业追踪：支持按企业查看详细收购价格和历史数据
+ * - 重点监测：每个地区 5-8 家重点粮食加工企业（包括中储粮、中粮等）
+ * - 企业分类：粮食贸易商、淀粉加工、饲料加工、乙醇加工
  */
 
 import { useState } from 'react';
@@ -15,16 +16,17 @@ import { FactoryList } from '@/components/FactoryList';
 import { PriceChart } from '@/components/PriceChart';
 import {
   getRegionData,
-  getFactoryDetail,
+  getEnterpriseDetail,
   GRAIN_TYPES,
   RegionData,
-  Factory,
+  Enterprise,
+  ENTERPRISE_TYPES,
 } from '@/lib/data';
 
 export default function Home() {
   const [selectedGrain, setSelectedGrain] = useState('corn');
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-  const [selectedFactory, setSelectedFactory] = useState<Factory | null>(null);
+  const [selectedEnterprise, setSelectedEnterprise] = useState<Enterprise | null>(null);
 
   // 获取当前粮食品类的地区数据
   const regionsData = getRegionData(selectedGrain);
@@ -32,10 +34,10 @@ export default function Home() {
     ? regionsData.find((r) => r.id === selectedRegion)
     : null;
 
-  // 获取工厂详情（包括历史数据）
-  const factoryDetail =
-    selectedFactory && selectedRegion
-      ? getFactoryDetail(selectedRegion, selectedFactory.id)
+  // 获取企业详情（包括历史数据）
+  const enterpriseDetail =
+    selectedEnterprise && selectedRegion
+      ? getEnterpriseDetail(selectedRegion, selectedEnterprise.id)
       : null;
 
   const currentGrainType = GRAIN_TYPES.find((g) => g.id === selectedGrain);
@@ -53,7 +55,7 @@ export default function Home() {
         <div className="relative h-full flex flex-col justify-center px-4 text-white">
           <h1 className="text-3xl font-bold mb-2">粮食收购价格监控</h1>
           <p className="text-sm opacity-90">
-            实时掌握全国主要地区粮食收购价格信息
+            实时掌握全国主要地区粮食重点企业收购价格信息
           </p>
         </div>
       </div>
@@ -70,7 +72,7 @@ export default function Home() {
                 onClick={() => {
                   setSelectedGrain(grain.id);
                   setSelectedRegion(null);
-                  setSelectedFactory(null);
+                  setSelectedEnterprise(null);
                 }}
                 className={`
                   px-4 py-2 rounded-lg font-semibold transition-all
@@ -110,7 +112,7 @@ export default function Home() {
                   setSelectedRegion(
                     selectedRegion === region.id ? null : region.id
                   );
-                  setSelectedFactory(null);
+                  setSelectedEnterprise(null);
                 }}
               />
             ))}
@@ -127,7 +129,7 @@ export default function Home() {
                   {currentRegion.name} - {currentGrainType?.name}
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  共 {currentRegion.factories.length} 家收购工厂
+                  共 {currentRegion.enterprises.length} 家重点监测企业
                 </p>
               </div>
               <button
@@ -138,45 +140,55 @@ export default function Home() {
               </button>
             </div>
 
-            {/* 工厂列表 */}
+            {/* 企业列表 */}
             <div>
               <h3 className="text-lg font-semibold text-card-foreground mb-3">
-                工厂收购价格
+                重点监测企业
               </h3>
               <FactoryList
-                factories={currentRegion.factories}
-                onFactoryClick={(factory) => setSelectedFactory(factory)}
+                factories={currentRegion.enterprises}
+                onFactoryClick={(factory) => setSelectedEnterprise(factory)}
               />
             </div>
 
-            {/* 工厂详情和趋势图 */}
-            {factoryDetail && (
+            {/* 企业详情和趋势图 */}
+            {enterpriseDetail && (
               <div className="border-t border-border pt-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-card-foreground">
-                      {factoryDetail.name} - 价格趋势
+                      {enterpriseDetail.name} - 价格趋势
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
                       最近 30 天价格走势
                     </p>
                   </div>
                   <button
-                    onClick={() => setSelectedFactory(null)}
+                    onClick={() => setSelectedEnterprise(null)}
                     className="px-4 py-2 bg-secondary text-card-foreground rounded-lg hover:bg-muted transition-all"
                   >
                     关闭
                   </button>
                 </div>
 
-                {/* 工厂信息卡片 */}
+                {/* 企业信息卡片 */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-secondary rounded-lg p-4">
+                    <p className="text-xs text-muted-foreground mb-1">
+                      企业类型
+                    </p>
+                    <p className={`text-sm font-bold px-2 py-1 rounded w-fit ${
+                      ENTERPRISE_TYPES[enterpriseDetail.type].color
+                    }`}>
+                      {ENTERPRISE_TYPES[enterpriseDetail.type].label}
+                    </p>
+                  </div>
                   <div className="bg-secondary rounded-lg p-4">
                     <p className="text-xs text-muted-foreground mb-1">
                       当前价格
                     </p>
                     <p className="text-2xl font-bold text-primary">
-                      {factoryDetail.price}
+                      {enterpriseDetail.price}
                     </p>
                     <p className="text-xs text-muted-foreground">元/吨</p>
                   </div>
@@ -186,42 +198,44 @@ export default function Home() {
                     </p>
                     <p
                       className={`text-2xl font-bold ${
-                        factoryDetail.change >= 0
+                        enterpriseDetail.change >= 0
                           ? 'text-green-500'
                           : 'text-red-500'
                       }`}
                     >
-                      {factoryDetail.change >= 0 ? '+' : ''}
-                      {factoryDetail.change.toFixed(1)}%
+                      {enterpriseDetail.change >= 0 ? '+' : ''}
+                      {enterpriseDetail.change.toFixed(1)}%
                     </p>
                   </div>
-                  {factoryDetail.volume && (
-                    <div className="bg-secondary rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground mb-1">
-                        收购量
-                      </p>
-                      <p className="text-2xl font-bold text-primary">
-                        {factoryDetail.volume}
-                      </p>
-                      <p className="text-xs text-muted-foreground">万吨</p>
-                    </div>
-                  )}
-                  {factoryDetail.quality && (
-                    <div className="bg-secondary rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground mb-1">
-                        品质等级
-                      </p>
-                      <p className="text-2xl font-bold text-primary">
-                        {factoryDetail.quality}
-                      </p>
-                    </div>
-                  )}
+                  <div className="bg-secondary rounded-lg p-4">
+                    <p className="text-xs text-muted-foreground mb-1">
+                      收购量
+                    </p>
+                    <p className="text-2xl font-bold text-primary">
+                      {enterpriseDetail.volume}
+                    </p>
+                    <p className="text-xs text-muted-foreground">万吨</p>
+                  </div>
                 </div>
+
+                {/* 母公司信息 */}
+                {enterpriseDetail.parentCompany && (
+                  <div className="bg-accent/10 border border-accent rounded-lg p-4">
+                    <p className="text-sm">
+                      <span className="font-semibold text-card-foreground">
+                        母公司：
+                      </span>
+                      <span className="text-muted-foreground ml-2">
+                        {enterpriseDetail.parentCompany}
+                      </span>
+                    </p>
+                  </div>
+                )}
 
                 {/* 价格趋势图 */}
                 <PriceChart
-                  data={factoryDetail.history}
-                  title={`${factoryDetail.name} - 30日价格趋势`}
+                  data={enterpriseDetail.history}
+                  title={`${enterpriseDetail.name} - 30日价格趋势`}
                   height={300}
                 />
               </div>
@@ -232,7 +246,7 @@ export default function Home() {
         {/* 使用提示 */}
         {!selectedRegion && (
           <div className="bg-accent/10 border border-accent rounded-lg p-4 text-center text-sm text-muted-foreground">
-            💡 点击上方地区卡片查看该地区的工厂收购价格详情
+            💡 点击上方地区卡片查看该地区的重点监测企业收购价格详情
           </div>
         )}
       </div>

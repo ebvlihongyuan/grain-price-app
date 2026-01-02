@@ -1,17 +1,24 @@
 /**
  * Grain Price App - Data Models and Mock Data
  * 粮食收购价格应用 - 数据模型和模拟数据
+ * 
+ * 重点监测企业包括：中储粮、中粮等大型企业
+ * 企业分类：粮食贸易商、淀粉加工、饲料加工、乙醇加工
  */
 
-export interface Factory {
+export type EnterpriseType = 'trader' | 'starch' | 'feed' | 'ethanol';
+
+export interface Enterprise {
   id: string;
   name: string;
+  type: EnterpriseType;
   region: string;
   price: number;
   change: number; // percentage
+  volume: number; // 收购量 (万吨)
   lastUpdate: string;
-  volume?: number; // 收购量 (万吨)
-  quality?: string; // 品质等级
+  isKeyMonitored: boolean; // 是否为重点监测企业
+  parentCompany?: string; // 母公司（如中储粮、中粮）
 }
 
 export interface RegionData {
@@ -21,7 +28,7 @@ export interface RegionData {
   price: number;
   change: number;
   lastUpdate: string;
-  factories: Factory[];
+  enterprises: Enterprise[];
 }
 
 export interface PriceHistory {
@@ -36,6 +43,14 @@ export interface GrainType {
   unit: string; // 元/吨
   icon: string;
 }
+
+// 企业类型标签
+export const ENTERPRISE_TYPES: Record<EnterpriseType, { label: string; color: string }> = {
+  trader: { label: '粮食贸易商', color: 'bg-blue-100 text-blue-700' },
+  starch: { label: '淀粉加工', color: 'bg-purple-100 text-purple-700' },
+  feed: { label: '饲料加工', color: 'bg-orange-100 text-orange-700' },
+  ethanol: { label: '乙醇加工', color: 'bg-green-100 text-green-700' },
+};
 
 // 粮食品类
 export const GRAIN_TYPES: GrainType[] = [
@@ -55,56 +70,541 @@ export const REGIONS = [
   { id: 'anhui', name: '安徽', code: 'AH' },
 ];
 
-// 工厂名称库
-const FACTORY_NAMES = {
+// 重点监测企业数据
+const KEY_MONITORED_ENTERPRISES: Record<string, Enterprise[]> = {
   heilongjiang: [
-    '梅花生物',
-    '九台粮食',
-    '长春粮食',
-    '黑龙江粮食集团',
-    '哈尔滨粮油',
+    {
+      id: 'hlj-1',
+      name: '中储粮黑龙江分公司',
+      type: 'trader',
+      region: 'heilongjiang',
+      price: 2185,
+      change: 0.2,
+      volume: 15.5,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中储粮',
+    },
+    {
+      id: 'hlj-2',
+      name: '中粮集团黑龙江',
+      type: 'feed',
+      region: 'heilongjiang',
+      price: 2180,
+      change: -0.1,
+      volume: 12.3,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中粮',
+    },
+    {
+      id: 'hlj-3',
+      name: '梅花生物',
+      type: 'feed',
+      region: 'heilongjiang',
+      price: 2175,
+      change: 0.5,
+      volume: 8.7,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'hlj-4',
+      name: '哈尔滨粮油贸易',
+      type: 'trader',
+      region: 'heilongjiang',
+      price: 2190,
+      change: 0.3,
+      volume: 6.2,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'hlj-5',
+      name: '黑龙江淀粉加工厂',
+      type: 'starch',
+      region: 'heilongjiang',
+      price: 2170,
+      change: -0.2,
+      volume: 5.1,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'hlj-6',
+      name: '黑龙江乙醇集团',
+      type: 'ethanol',
+      region: 'heilongjiang',
+      price: 2165,
+      change: 0.1,
+      volume: 4.8,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
   ],
   jilin: [
-    '吉林粮食集团',
-    '长春饲料',
-    '吉林农业',
-    '松原粮食',
-    '四平粮油',
+    {
+      id: 'jl-1',
+      name: '中储粮吉林分公司',
+      type: 'trader',
+      region: 'jilin',
+      price: 2225,
+      change: 0.4,
+      volume: 14.2,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中储粮',
+    },
+    {
+      id: 'jl-2',
+      name: '中粮集团吉林',
+      type: 'feed',
+      region: 'jilin',
+      price: 2220,
+      change: 0.2,
+      volume: 11.5,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中粮',
+    },
+    {
+      id: 'jl-3',
+      name: '吉林粮食集团',
+      type: 'trader',
+      region: 'jilin',
+      price: 2215,
+      change: -0.3,
+      volume: 9.8,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'jl-4',
+      name: '长春饲料有限公司',
+      type: 'feed',
+      region: 'jilin',
+      price: 2210,
+      change: 0.1,
+      volume: 7.3,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'jl-5',
+      name: '吉林淀粉工业',
+      type: 'starch',
+      region: 'jilin',
+      price: 2205,
+      change: -0.2,
+      volume: 5.6,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'jl-6',
+      name: '吉林乙醇燃料',
+      type: 'ethanol',
+      region: 'jilin',
+      price: 2200,
+      change: 0.3,
+      volume: 4.2,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'jl-7',
+      name: '松原粮食贸易',
+      type: 'trader',
+      region: 'jilin',
+      price: 2218,
+      change: 0.0,
+      volume: 3.9,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
   ],
   liaoning: [
-    '锦州港',
-    '辽宁粮食',
-    '丹东粮食',
-    '沈阳粮油',
-    '营口粮食',
+    {
+      id: 'ln-1',
+      name: '中储粮辽宁分公司',
+      type: 'trader',
+      region: 'liaoning',
+      price: 2205,
+      change: 0.1,
+      volume: 13.1,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中储粮',
+    },
+    {
+      id: 'ln-2',
+      name: '中粮集团辽宁',
+      type: 'feed',
+      region: 'liaoning',
+      price: 2200,
+      change: -0.1,
+      volume: 10.2,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中粮',
+    },
+    {
+      id: 'ln-3',
+      name: '锦州港粮食',
+      type: 'trader',
+      region: 'liaoning',
+      price: 2195,
+      change: 0.2,
+      volume: 8.5,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'ln-4',
+      name: '辽宁饲料加工',
+      type: 'feed',
+      region: 'liaoning',
+      price: 2190,
+      change: -0.3,
+      volume: 6.7,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'ln-5',
+      name: '丹东淀粉厂',
+      type: 'starch',
+      region: 'liaoning',
+      price: 2185,
+      change: 0.0,
+      volume: 5.2,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'ln-6',
+      name: '沈阳乙醇公司',
+      type: 'ethanol',
+      region: 'liaoning',
+      price: 2180,
+      change: 0.4,
+      volume: 3.8,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
   ],
   hebei: [
-    '河北粮食集团',
-    '秦皇岛粮食',
-    '邯郸粮油',
-    '保定粮食',
-    '邢台农业',
+    {
+      id: 'hb-1',
+      name: '中储粮河北分公司',
+      type: 'trader',
+      region: 'hebei',
+      price: 2285,
+      change: 0.3,
+      volume: 16.2,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中储粮',
+    },
+    {
+      id: 'hb-2',
+      name: '中粮集团河北',
+      type: 'feed',
+      region: 'hebei',
+      price: 2280,
+      change: 0.1,
+      volume: 12.8,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中粮',
+    },
+    {
+      id: 'hb-3',
+      name: '秦皇岛粮食',
+      type: 'trader',
+      region: 'hebei',
+      price: 2275,
+      change: -0.2,
+      volume: 10.1,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'hb-4',
+      name: '河北饲料集团',
+      type: 'feed',
+      region: 'hebei',
+      price: 2270,
+      change: 0.2,
+      volume: 7.9,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'hb-5',
+      name: '邯郸淀粉工业',
+      type: 'starch',
+      region: 'hebei',
+      price: 2265,
+      change: -0.1,
+      volume: 6.3,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'hb-6',
+      name: '保定乙醇燃料',
+      type: 'ethanol',
+      region: 'hebei',
+      price: 2260,
+      change: 0.3,
+      volume: 4.5,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'hb-7',
+      name: '邢台粮食贸易',
+      type: 'trader',
+      region: 'hebei',
+      price: 2278,
+      change: 0.0,
+      volume: 5.2,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
   ],
   shandong: [
-    '寿光粮食',
-    '山东粮食集团',
-    '青岛粮油',
-    '济南粮食',
-    '烟台粮食',
+    {
+      id: 'sd-1',
+      name: '中储粮山东分公司',
+      type: 'trader',
+      region: 'shandong',
+      price: 2355,
+      change: 0.2,
+      volume: 17.5,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中储粮',
+    },
+    {
+      id: 'sd-2',
+      name: '中粮集团山东',
+      type: 'feed',
+      region: 'shandong',
+      price: 2350,
+      change: 0.1,
+      volume: 13.2,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中粮',
+    },
+    {
+      id: 'sd-3',
+      name: '寿光粮食集团',
+      type: 'trader',
+      region: 'shandong',
+      price: 2345,
+      change: -0.1,
+      volume: 11.3,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'sd-4',
+      name: '山东饲料加工',
+      type: 'feed',
+      region: 'shandong',
+      price: 2340,
+      change: 0.3,
+      volume: 8.6,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'sd-5',
+      name: '青岛淀粉厂',
+      type: 'starch',
+      region: 'shandong',
+      price: 2335,
+      change: -0.2,
+      volume: 6.9,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'sd-6',
+      name: '济南乙醇公司',
+      type: 'ethanol',
+      region: 'shandong',
+      price: 2330,
+      change: 0.4,
+      volume: 5.1,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'sd-7',
+      name: '烟台粮食贸易',
+      type: 'trader',
+      region: 'shandong',
+      price: 2348,
+      change: 0.1,
+      volume: 4.7,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'sd-8',
+      name: '潍坊饲料有限公司',
+      type: 'feed',
+      region: 'shandong',
+      price: 2342,
+      change: -0.1,
+      volume: 3.5,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
   ],
   henan: [
-    '河南粮食集团',
-    '郑州粮油',
-    '焦作粮食',
-    '洛阳粮食',
-    '开封粮油',
+    {
+      id: 'hn-1',
+      name: '中储粮河南分公司',
+      type: 'trader',
+      region: 'henan',
+      price: 2305,
+      change: 0.2,
+      volume: 15.8,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中储粮',
+    },
+    {
+      id: 'hn-2',
+      name: '中粮集团河南',
+      type: 'feed',
+      region: 'henan',
+      price: 2300,
+      change: 0.0,
+      volume: 12.1,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中粮',
+    },
+    {
+      id: 'hn-3',
+      name: '郑州粮食集团',
+      type: 'trader',
+      region: 'henan',
+      price: 2295,
+      change: -0.1,
+      volume: 9.7,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'hn-4',
+      name: '焦作饲料加工',
+      type: 'feed',
+      region: 'henan',
+      price: 2290,
+      change: 0.2,
+      volume: 7.4,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'hn-5',
+      name: '洛阳淀粉工业',
+      type: 'starch',
+      region: 'henan',
+      price: 2285,
+      change: -0.2,
+      volume: 5.8,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'hn-6',
+      name: '开封乙醇燃料',
+      type: 'ethanol',
+      region: 'henan',
+      price: 2280,
+      change: 0.3,
+      volume: 4.3,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
   ],
   anhui: [
-    '安徽粮食集团',
-    '合肥粮食',
-    '芜湖粮油',
-    '蚌埠粮食',
-    '阜阳粮油',
+    {
+      id: 'ah-1',
+      name: '中储粮安徽分公司',
+      type: 'trader',
+      region: 'anhui',
+      price: 2255,
+      change: 0.1,
+      volume: 14.2,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中储粮',
+    },
+    {
+      id: 'ah-2',
+      name: '中粮集团安徽',
+      type: 'feed',
+      region: 'anhui',
+      price: 2250,
+      change: -0.1,
+      volume: 11.3,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+      parentCompany: '中粮',
+    },
+    {
+      id: 'ah-3',
+      name: '合肥粮食集团',
+      type: 'trader',
+      region: 'anhui',
+      price: 2245,
+      change: 0.2,
+      volume: 8.9,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'ah-4',
+      name: '芜湖饲料有限公司',
+      type: 'feed',
+      region: 'anhui',
+      price: 2240,
+      change: -0.2,
+      volume: 6.5,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'ah-5',
+      name: '蚌埠淀粉厂',
+      type: 'starch',
+      region: 'anhui',
+      price: 2235,
+      change: 0.1,
+      volume: 5.1,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
+    {
+      id: 'ah-6',
+      name: '阜阳乙醇公司',
+      type: 'ethanol',
+      region: 'anhui',
+      price: 2230,
+      change: 0.3,
+      volume: 3.7,
+      lastUpdate: new Date().toISOString().split('T')[0],
+      isKeyMonitored: true,
+    },
   ],
 };
 
@@ -117,21 +617,6 @@ function generateMockPrice(basePrice: number, variance: number = 50): number {
 // 生成模拟涨跌幅
 function generateMockChange(): number {
   return Math.round((Math.random() - 0.5) * 4 * 10) / 10; // -2% to +2%
-}
-
-// 生成工厂数据
-function generateFactories(region: string, basePrice: number): Factory[] {
-  const factoryNames = FACTORY_NAMES[region as keyof typeof FACTORY_NAMES] || [];
-  return factoryNames.map((name, index) => ({
-    id: `${region}-factory-${index}`,
-    name,
-    region,
-    price: generateMockPrice(basePrice, 30),
-    change: generateMockChange(),
-    lastUpdate: new Date().toISOString().split('T')[0],
-    volume: Math.round(Math.random() * 50 + 10) / 10,
-    quality: ['一级', '二级', '三级'][Math.floor(Math.random() * 3)],
-  }));
 }
 
 // 玉米价格基准（元/吨）
@@ -167,7 +652,7 @@ const SOYBEAN_BASE_PRICES: Record<string, number> = {
   anhui: 3920,
 };
 
-// 获取地区数据
+// 获取地区数据（包括重点监测企业）
 export function getRegionData(grainType: string = 'corn'): RegionData[] {
   const basePrices =
     grainType === 'corn'
@@ -178,9 +663,18 @@ export function getRegionData(grainType: string = 'corn'): RegionData[] {
 
   return REGIONS.map((region) => {
     const basePrice = basePrices[region.id];
-    const factories = generateFactories(region.id, basePrice);
+    const enterprises = KEY_MONITORED_ENTERPRISES[region.id] || [];
+    
+    // 调整企业价格基于粮食品类
+    const adjustedEnterprises = enterprises.map((e) => ({
+      ...e,
+      price: generateMockPrice(basePrice, 30),
+      change: generateMockChange(),
+      volume: Math.round((Math.random() * 10 + 3) * 10) / 10,
+    }));
+
     const avgPrice = Math.round(
-      factories.reduce((sum, f) => sum + f.price, 0) / factories.length
+      adjustedEnterprises.reduce((sum, e) => sum + e.price, 0) / adjustedEnterprises.length
     );
 
     return {
@@ -190,7 +684,7 @@ export function getRegionData(grainType: string = 'corn'): RegionData[] {
       price: avgPrice,
       change: generateMockChange(),
       lastUpdate: new Date().toISOString().split('T')[0],
-      factories,
+      enterprises: adjustedEnterprises,
     };
   });
 }
@@ -223,17 +717,17 @@ export function generatePriceHistory(
   return history;
 }
 
-// 获取工厂详情
-export function getFactoryDetail(regionId: string, factoryId: string) {
+// 获取企业详情
+export function getEnterpriseDetail(regionId: string, enterpriseId: string) {
   const regions = getRegionData();
   const region = regions.find((r) => r.id === regionId);
   if (!region) return null;
 
-  const factory = region.factories.find((f) => f.id === factoryId);
-  if (!factory) return null;
+  const enterprise = region.enterprises.find((e) => e.id === enterpriseId);
+  if (!enterprise) return null;
 
   return {
-    ...factory,
-    history: generatePriceHistory(factory.price),
+    ...enterprise,
+    history: generatePriceHistory(enterprise.price),
   };
 }

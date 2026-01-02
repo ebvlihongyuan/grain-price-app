@@ -4,11 +4,11 @@
  */
 
 import { ArrowDown, ArrowUp, ChevronRight } from 'lucide-react';
-import { Factory } from '@/lib/data';
+import { Enterprise, ENTERPRISE_TYPES } from '@/lib/data';
 
 interface FactoryListProps {
-  factories: Factory[];
-  onFactoryClick?: (factory: Factory) => void;
+  factories: Enterprise[];
+  onFactoryClick?: (factory: Enterprise) => void;
 }
 
 export function FactoryList({ factories, onFactoryClick }: FactoryListProps) {
@@ -27,24 +27,33 @@ export function FactoryList({ factories, onFactoryClick }: FactoryListProps) {
               flex items-center justify-between
             "
           >
-            {/* 左侧：工厂名称和品质 */}
+            {/* 左侧：企业名称和类型 */}
             <div className="flex-1">
               <h4 className="font-semibold text-card-foreground">
                 {factory.name}
               </h4>
-              {factory.quality && (
-                <p className="text-xs text-muted-foreground">
-                  品质：{factory.quality}
-                </p>
-              )}
+              <div className="flex items-center gap-2 mt-1">
+                <span className={`text-xs font-semibold px-2 py-1 rounded ${
+                  ENTERPRISE_TYPES[factory.type].color
+                }`}>
+                  {ENTERPRISE_TYPES[factory.type].label}
+                </span>
+                {factory.parentCompany && (
+                  <span className="text-xs text-muted-foreground">
+                    ({factory.parentCompany})
+                  </span>
+                )}
+              </div>
             </div>
 
-            {/* 中间：价格 */}
+            {/* 中间：价格和收购量 */}
             <div className="text-right mx-4">
               <p className="text-lg font-bold font-mono text-primary">
                 {factory.price}
               </p>
-              <p className="text-xs text-muted-foreground">元/吨</p>
+              <p className="text-xs text-muted-foreground">
+                {factory.volume}万吨
+              </p>
             </div>
 
             {/* 右侧：涨跌幅和箭头 */}
