@@ -619,37 +619,37 @@ function generateMockChange(): number {
   return Math.round((Math.random() - 0.5) * 4 * 10) / 10; // -2% to +2%
 }
 
-// 玉米价格基准（元/吨）
+// 玉米价格基准（元/吨）- 2026年1月最新市场行情
 const CORN_BASE_PRICES: Record<string, number> = {
-  heilongjiang: 2180,
-  jilin: 2220,
-  liaoning: 2200,
-  hebei: 2280,
-  shandong: 2350,
-  henan: 2300,
-  anhui: 2250,
+  heilongjiang: 2070,  // 黑龙江：2050-2090
+  jilin: 2155,         // 吉林：2150-2160
+  liaoning: 2200,      // 辽宁：2200
+  hebei: 2220,         // 河北：2220
+  shandong: 2350,      // 山东：2320-2380
+  henan: 2200,         // 河南：2200
+  anhui: 2210,         // 安徽：2200-2220
 };
 
-// 小麦价格基准（元/吨）
+// 小麦价格基准（元/吨）- 2026年1月市场行情
 const WHEAT_BASE_PRICES: Record<string, number> = {
-  heilongjiang: 2650,
-  jilin: 2680,
-  liaoning: 2670,
-  hebei: 2720,
-  shandong: 2750,
-  henan: 2800,
-  anhui: 2720,
+  heilongjiang: 2600,
+  jilin: 2630,
+  liaoning: 2620,
+  hebei: 2680,
+  shandong: 2700,
+  henan: 2750,
+  anhui: 2680,
 };
 
-// 大豆价格基准（元/吨）
+// 大豆价格基准（元/吨）- 2026年1月市场行情
 const SOYBEAN_BASE_PRICES: Record<string, number> = {
-  heilongjiang: 3850,
-  jilin: 3900,
-  liaoning: 3880,
-  hebei: 3950,
-  shandong: 4000,
-  henan: 3980,
-  anhui: 3920,
+  heilongjiang: 3800,
+  jilin: 3850,
+  liaoning: 3830,
+  hebei: 3900,
+  shandong: 3950,
+  henan: 3930,
+  anhui: 3870,
 };
 
 // 获取地区数据（包括重点监测企业）
