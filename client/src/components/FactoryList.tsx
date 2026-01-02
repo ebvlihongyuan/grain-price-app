@@ -52,7 +52,7 @@ export function FactoryList({ factories, onFactoryClick }: FactoryListProps) {
                 {factory.price}
               </p>
               <p className="text-xs text-muted-foreground">
-                {factory.volume}万吨
+                月: {factory.monthlyVolume}万吨
               </p>
             </div>
 

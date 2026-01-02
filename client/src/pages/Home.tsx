@@ -209,28 +209,51 @@ export default function Home() {
                   </div>
                   <div className="bg-secondary rounded-lg p-4">
                     <p className="text-xs text-muted-foreground mb-1">
-                      收购量
+                      月收购量
                     </p>
                     <p className="text-2xl font-bold text-primary">
-                      {enterpriseDetail.volume}
+                      {enterpriseDetail.monthlyVolume}
+                    </p>
+                    <p className="text-xs text-muted-foreground">万吨</p>
+                  </div>
+                  <div className="bg-secondary rounded-lg p-4">
+                    <p className="text-xs text-muted-foreground mb-1">
+                      年收购量
+                    </p>
+                    <p className="text-2xl font-bold text-primary">
+                      {enterpriseDetail.yearlyVolume}
                     </p>
                     <p className="text-xs text-muted-foreground">万吨</p>
                   </div>
                 </div>
 
-                {/* 母公司信息 */}
-                {enterpriseDetail.parentCompany && (
-                  <div className="bg-accent/10 border border-accent rounded-lg p-4">
+                {/* 企业信息 */}
+                <div className="bg-accent/10 border border-accent rounded-lg p-4 space-y-2">
+                  {enterpriseDetail.parentCompany && (
                     <p className="text-sm">
-                      <span className="font-semibold text-card-foreground">
-                        母公司：
-                      </span>
+                      <span className="font-semibold text-card-foreground">Mother Company:</span>
                       <span className="text-muted-foreground ml-2">
                         {enterpriseDetail.parentCompany}
                       </span>
                     </p>
-                  </div>
-                )}
+                  )}
+                  {enterpriseDetail.address && (
+                    <p className="text-sm">
+                      <span className="font-semibold text-card-foreground">Address:</span>
+                      <span className="text-muted-foreground ml-2">
+                        {enterpriseDetail.address}
+                      </span>
+                    </p>
+                  )}
+                  {enterpriseDetail.phone && (
+                    <p className="text-sm">
+                      <span className="font-semibold text-card-foreground">Phone:</span>
+                      <span className="text-muted-foreground ml-2">
+                        {enterpriseDetail.phone}
+                      </span>
+                    </p>
+                  )}
+                </div>
 
                 {/* 价格趋势图 */}
                 <PriceChart
