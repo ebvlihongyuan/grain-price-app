@@ -8,6 +8,7 @@
  * - 企业追踪：支持按企业查看详细收购价格和历史数据
  * - 重点监测：每个地区 5-8 家重点粮食加工企业（包括中储粮、中粮等）
  * - 企业分类：粮食贸易商、淀粉加工、饲料加工、乙醇加工
+ * - 价格分析：为东北三省提供综合价格分析与预测
  */
 
 import { useState } from 'react';
@@ -17,6 +18,7 @@ import { FactoryList } from '@/components/FactoryList';
 import { PriceChart } from '@/components/PriceChart';
 import FuturesPriceCard from '@/components/FuturesPriceCard';
 import PriceComparison from '@/components/PriceComparison';
+import PriceAnalysisCard from '@/components/PriceAnalysisCard';
 import {
   getRegionData,
   getEnterpriseDetail,
@@ -26,11 +28,13 @@ import {
   ENTERPRISE_TYPES,
   getFuturesPrices,
 } from '@/lib/data';
+import { getNortheastComparison } from '@/lib/priceAnalysis';
 
 export default function Home() {
   const [selectedGrain, setSelectedGrain] = useState('corn');
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [selectedEnterprise, setSelectedEnterprise] = useState<Enterprise | null>(null);
+  const [showAnalysis, setShowAnalysis] = useState(false);
 
   // 获取当前粮食品类的地区数据
   const regionsData = getRegionData(selectedGrain);
@@ -49,6 +53,9 @@ export default function Home() {
   // 获取期货价格
   const futuresPrices = getFuturesPrices(selectedGrain);
   const currentFutures = futuresPrices.length > 0 ? futuresPrices[0] : null;
+  
+  // 获取东北三省的价格分析
+  const northeastAnalysis = getNortheastComparison();
 
   return (
     <div className="min-h-screen bg-background">
@@ -96,11 +103,50 @@ export default function Home() {
             ))}
           </div>
 
-          {/* 更新时间 */}
-          <div className="text-sm text-muted-foreground">
-            更新时间：{new Date().toLocaleDateString('zh-CN')} 08:00
+          {/* 更新时间和分析按钮 */}
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-muted-foreground">
+              更新时间：{new Date().toLocaleDateString('zh-CN')} 08:00
+            </div>
+            {selectedGrain === 'corn' && (
+              <button
+                onClick={() => setShowAnalysis(!showAnalysis)}
+                className={`
+                  px-4 py-2 rounded-lg font-semibold transition-all
+                  ${
+                    showAnalysis
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-card text-card-foreground border border-border hover:bg-secondary'
+                  }
+                `}
+              >
+                📊 价格分析
+              </button>
+            )}
           </div>
         </div>
+
+        {/* 价格分析面板 */}
+        {showAnalysis && selectedGrain === 'corn' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-card-foreground">
+                东北三省价格分析与预测
+              </h2>
+              <button
+                onClick={() => setShowAnalysis(false)}
+                className="px-4 py-2 bg-secondary text-card-foreground rounded-lg hover:bg-muted transition-all"
+              >
+                关闭
+              </button>
+            </div>
+            <div className="grid grid-cols-1 gap-6">
+              <PriceAnalysisCard report={northeastAnalysis.heilongjiang} />
+              <PriceAnalysisCard report={northeastAnalysis.jilin} />
+              <PriceAnalysisCard report={northeastAnalysis.liaoning} />
+            </div>
+          </div>
+        )}
 
         {/* 期货价格展示 */}
         {currentFutures && (
@@ -298,9 +344,10 @@ export default function Home() {
         )}
 
         {/* 使用提示 */}
-        {!selectedRegion && (
+        {!selectedRegion && !showAnalysis && (
           <div className="bg-accent/10 border border-accent rounded-lg p-4 text-center text-sm text-muted-foreground">
             💡 点击上方地区卡片查看该地区的重点监测企业收购价格详情，与期货价格进行对比
+            {selectedGrain === 'corn' && '；或点击"📊 价格分析"查看东北三省的综合价格分析与预测'}
           </div>
         )}
       </div>
