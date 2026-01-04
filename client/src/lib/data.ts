@@ -204,6 +204,7 @@ const KEY_MONITORED_ENTERPRISES: Record<string, Enterprise[]> = {
     { id: 'jl-6', name: '松原粮食贸易', type: 'trader', region: 'jilin', price: 1952, change: 0.0, monthlyVolume: 6.8, yearlyVolume: 68, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '松原市宁江区朝阳街1号', phone: '0438-6666666' },
     { id: 'jl-7', name: '长春粮食贸易', type: 'trader', region: 'jilin', price: 1962, change: 0.1, monthlyVolume: 10.3, yearlyVolume: 103, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '长春市南关区南湖大路1号', phone: '0431-85607700' },
   ],
+  // 注：锦州港是中国重要的粮食出口港口，玉米价格对国际市场有重要参考价值
   liaoning: [
     { id: 'ln-1', name: '中储粮辽宁分公司', type: 'trader', region: 'liaoning', price: 2100, change: 0.3, monthlyVolume: 14.5, yearlyVolume: 145, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, parentCompany: '中储粮', address: '沈阳市皇姑区黄河北大街56-40号', phone: '024-86282222' },
     { id: 'ln-2', name: '中粮生化辽宁', type: 'ethanol', region: 'liaoning', price: 2095, change: 0.2, monthlyVolume: 10.8, yearlyVolume: 108, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, parentCompany: '中粮', address: '沈阳市浑南区浑南中路1号', phone: '024-31688888' },
@@ -212,6 +213,7 @@ const KEY_MONITORED_ENTERPRISES: Record<string, Enterprise[]> = {
     { id: 'ln-5', name: '辽宁饲料加工', type: 'feed', region: 'liaoning', price: 2110, change: 0.1, monthlyVolume: 8.3, yearlyVolume: 83, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '大连市中山区港湾街1号', phone: '0411-83688888' },
     { id: 'ln-6', name: '锦州粮食贸易', type: 'trader', region: 'liaoning', price: 2100, change: -0.2, monthlyVolume: 7.1, yearlyVolume: 71, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '锦州市古塔区解放路1号', phone: '0416-3666666' },
     { id: 'ln-7', name: '辽宁淀粉加工', type: 'starch', region: 'liaoning', price: 2095, change: 0.1, monthlyVolume: 6.5, yearlyVolume: 65, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '营口市西市区渤海大街1号', phone: '0417-3666666' },
+    { id: 'ln-8', name: '锦州港玉米交易中心', type: 'trader', region: 'liaoning', price: 2120, change: 0.5, monthlyVolume: 25.5, yearlyVolume: 255, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '锦州市古塔区港湾街1号', phone: '0416-3888888' },
   ],
   hebei: [
     { id: 'hb-1', name: '中储粮河北分公司', type: 'trader', region: 'hebei', price: 2080, change: 0.2, monthlyVolume: 16.8, yearlyVolume: 168, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, parentCompany: '中储粮', address: '石家庄市长安区中山东路1号', phone: '0311-85108888' },
