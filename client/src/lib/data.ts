@@ -252,3 +252,92 @@ const KEY_MONITORED_ENTERPRISES: Record<string, Enterprise[]> = {
     { id: 'ah-7', name: '安徽淀粉加工', type: 'starch', region: 'anhui', price: 2070, change: 0.1, monthlyVolume: 6.5, yearlyVolume: 65, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '滁州市琅琊区中山路1号', phone: '0550-3888888' },
   ],
 };
+
+// 期货价格接口
+export interface FuturesPrice {
+  id: string;
+  name: string; // 合约名称，如 "玉米2603"
+  symbol: string; // 交易代码，如 "C2603"
+  exchange: string; // 交易所，如 "DCE"
+  price: number; // 最新价格
+  change: number; // 涨跌幅 (%)
+  changeAmount: number; // 涨跌额 (元/吨)
+  openPrice: number; // 开盘价
+  highPrice: number; // 最高价
+  lowPrice: number; // 最低价
+  volume: number; // 成交量 (手)
+  openInterest: number; // 持仓量 (手)
+  lastUpdate: string; // 最后更新时间
+  grainType: 'corn' | 'wheat' | 'soybean'; // 粮食类型
+}
+
+// 大连商品交易所期货价格（2026年1月最新行情）
+export const DCE_FUTURES_PRICES: FuturesPrice[] = [
+  {
+    id: 'dce-corn-2603',
+    name: '玉米2603',
+    symbol: 'C2603',
+    exchange: 'DCE',
+    price: 2192,
+    change: -0.09,
+    changeAmount: -2,
+    openPrice: 2195,
+    highPrice: 2198,
+    lowPrice: 2186,
+    volume: 261112,
+    openInterest: 997444,
+    lastUpdate: new Date().toISOString().split('T')[0],
+    grainType: 'corn',
+  },
+  {
+    id: 'dce-soybean-2603',
+    name: '大豆2603',
+    symbol: 'A2603',
+    exchange: 'DCE',
+    price: 4248,
+    change: 0.57,
+    changeAmount: 24,
+    openPrice: 4224,
+    highPrice: 4260,
+    lowPrice: 4220,
+    volume: 185420,
+    openInterest: 654320,
+    lastUpdate: new Date().toISOString().split('T')[0],
+    grainType: 'soybean',
+  },
+  {
+    id: 'dce-soymeal-2603',
+    name: '豆粕2603',
+    symbol: 'M2603',
+    exchange: 'DCE',
+    price: 2776,
+    change: -0.69,
+    changeAmount: -19,
+    openPrice: 2795,
+    highPrice: 2800,
+    lowPrice: 2746,
+    volume: 855700,
+    openInterest: 1245600,
+    lastUpdate: new Date().toISOString().split('T')[0],
+    grainType: 'soybean',
+  },
+];
+
+// 获取期货价格
+export function getFuturesPrices(grainType?: string): FuturesPrice[] {
+  if (!grainType) return DCE_FUTURES_PRICES;
+  return DCE_FUTURES_PRICES.filter((f) => f.grainType === grainType);
+}
+
+// 计算收购价与期货价的价差
+export function calculatePriceDifference(
+  purchasePrice: number,
+  futuresPrice: number
+): { difference: number; percentage: number } {
+  const difference = purchasePrice - futuresPrice;
+  const percentage = (difference / futuresPrice) * 100;
+  return {
+    difference: Math.round(difference),
+    percentage: Math.round(percentage * 100) / 100,
+  };
+}

@@ -4,6 +4,7 @@
  * 
  * 设计理念：农业数据驾驶舱
  * - 地区优先：首屏展示七个主要地区的玉米收购价格对比
+ * - 期货对标：展示大连商品交易所期货价格，与收购价进行对比
  * - 企业追踪：支持按企业查看详细收购价格和历史数据
  * - 重点监测：每个地区 5-8 家重点粮食加工企业（包括中储粮、中粮等）
  * - 企业分类：粮食贸易商、淀粉加工、饲料加工、乙醇加工
@@ -14,6 +15,8 @@ import { ChevronDown } from 'lucide-react';
 import { RegionCard } from '@/components/RegionCard';
 import { FactoryList } from '@/components/FactoryList';
 import { PriceChart } from '@/components/PriceChart';
+import FuturesPriceCard from '@/components/FuturesPriceCard';
+import PriceComparison from '@/components/PriceComparison';
 import {
   getRegionData,
   getEnterpriseDetail,
@@ -21,6 +24,7 @@ import {
   RegionData,
   Enterprise,
   ENTERPRISE_TYPES,
+  getFuturesPrices,
 } from '@/lib/data';
 
 export default function Home() {
@@ -41,6 +45,10 @@ export default function Home() {
       : null;
 
   const currentGrainType = GRAIN_TYPES.find((g) => g.id === selectedGrain);
+  
+  // 获取期货价格
+  const futuresPrices = getFuturesPrices(selectedGrain);
+  const currentFutures = futuresPrices.length > 0 ? futuresPrices[0] : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -55,7 +63,7 @@ export default function Home() {
         <div className="relative h-full flex flex-col justify-center px-4 text-white">
           <h1 className="text-3xl font-bold mb-2">粮食收购价格监控</h1>
           <p className="text-sm opacity-90">
-            实时掌握全国主要地区粮食重点企业收购价格信息
+            实时掌握全国主要地区粮食重点企业收购价格信息 | 大连期货价格对标
           </p>
         </div>
       </div>
@@ -93,6 +101,20 @@ export default function Home() {
             更新时间：{new Date().toLocaleDateString('zh-CN')} 08:00
           </div>
         </div>
+
+        {/* 期货价格展示 */}
+        {currentFutures && (
+          <div>
+            <h2 className="text-xl font-bold text-card-foreground mb-4">
+              大连商品交易所期货行情
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {futuresPrices.map((futures) => (
+                <FuturesPriceCard key={futures.id} futures={futures} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* 地区价格概览 */}
         <div>
@@ -139,6 +161,15 @@ export default function Home() {
                 关闭
               </button>
             </div>
+
+            {/* 收购价与期货价对比 */}
+            {currentFutures && (
+              <PriceComparison
+                purchasePrice={currentRegion.price}
+                futures={currentFutures}
+                regionName={currentRegion.name}
+              />
+            )}
 
             {/* 企业列表 */}
             <div>
@@ -231,7 +262,7 @@ export default function Home() {
                 <div className="bg-accent/10 border border-accent rounded-lg p-4 space-y-2">
                   {enterpriseDetail.parentCompany && (
                     <p className="text-sm">
-                      <span className="font-semibold text-card-foreground">Mother Company:</span>
+                      <span className="font-semibold text-card-foreground">母公司：</span>
                       <span className="text-muted-foreground ml-2">
                         {enterpriseDetail.parentCompany}
                       </span>
@@ -239,7 +270,7 @@ export default function Home() {
                   )}
                   {enterpriseDetail.address && (
                     <p className="text-sm">
-                      <span className="font-semibold text-card-foreground">Address:</span>
+                      <span className="font-semibold text-card-foreground">地址：</span>
                       <span className="text-muted-foreground ml-2">
                         {enterpriseDetail.address}
                       </span>
@@ -247,7 +278,7 @@ export default function Home() {
                   )}
                   {enterpriseDetail.phone && (
                     <p className="text-sm">
-                      <span className="font-semibold text-card-foreground">Phone:</span>
+                      <span className="font-semibold text-card-foreground">电话：</span>
                       <span className="text-muted-foreground ml-2">
                         {enterpriseDetail.phone}
                       </span>
@@ -269,7 +300,7 @@ export default function Home() {
         {/* 使用提示 */}
         {!selectedRegion && (
           <div className="bg-accent/10 border border-accent rounded-lg p-4 text-center text-sm text-muted-foreground">
-            💡 点击上方地区卡片查看该地区的重点监测企业收购价格详情
+            💡 点击上方地区卡片查看该地区的重点监测企业收购价格详情，与期货价格进行对比
           </div>
         )}
       </div>
