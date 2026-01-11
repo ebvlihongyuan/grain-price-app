@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1768124357604,
+      "tag": "0000_mature_tusk",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1768124428418,
+      "tag": "0001_wooden_gwen_stacy",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1768125427972,
+      "tag": "0002_parallel_crystal",
+      "breakpoints": true
+    }
+  ]
+}

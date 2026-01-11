@@ -12,6 +12,7 @@
  */
 
 import { useState } from 'react';
+import { useAuth } from '@/_core/hooks/useAuth';
 import { ChevronDown } from 'lucide-react';
 import { RegionCard } from '@/components/RegionCard';
 import { FactoryList } from '@/components/FactoryList';
@@ -31,6 +32,10 @@ import {
 import { getNortheastComparison } from '@/lib/priceAnalysis';
 
 export default function Home() {
+  // The userAuth hooks provides authentication state
+  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
+  let { user, loading, error, isAuthenticated, logout } = useAuth();
+
   const [selectedGrain, setSelectedGrain] = useState('corn');
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [selectedEnterprise, setSelectedEnterprise] = useState<Enterprise | null>(null);

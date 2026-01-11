@@ -5,12 +5,15 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
-
+import ScraperConfig from "./pages/ScraperConfig";
 
 function Router() {
+  // make sure to consider if you need authentication for certain routes
+  // ScraperConfig page requires admin role
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path={"/ "} component={Home} />
+      <Route path={"/scraper-config"} component={ScraperConfig} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
