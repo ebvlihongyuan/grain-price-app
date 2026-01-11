@@ -196,13 +196,14 @@ const KEY_MONITORED_ENTERPRISES: Record<string, Enterprise[]> = {
     { id: 'hlj-7', name: '黑龙江粮食集团', type: 'trader', region: 'heilongjiang', price: 2070, change: 0.0, monthlyVolume: 8.4, yearlyVolume: 84, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '哈尔滨市南岗区长江路209号', phone: '0451-82352500' },
   ],
   jilin: [
-    { id: 'jl-1', name: '中储粮吉林分公司', type: 'trader', region: 'jilin', price: 1960, change: 0.5, monthlyVolume: 15.2, yearlyVolume: 152, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, parentCompany: '中储粮', address: '长春市建设街2650号', phone: '0431-82526126' },
-    { id: 'jl-2', name: '中粮生化吉林', type: 'ethanol', region: 'jilin', price: 1955, change: 0.3, monthlyVolume: 12.5, yearlyVolume: 125, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, parentCompany: '中粮', address: '长春市经济技术开发区仙台大街1717号', phone: '0431-81891277' },
-    { id: 'jl-3', name: '吉林粮食集团', type: 'trader', region: 'jilin', price: 1958, change: -0.2, monthlyVolume: 12.8, yearlyVolume: 128, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '长春市朝阳区同志街1号', phone: '0431-85607600' },
-    { id: 'jl-4', name: '吉林淀粉加工', type: 'starch', region: 'jilin', price: 1950, change: -0.4, monthlyVolume: 8.6, yearlyVolume: 86, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '吉林市丰满区滨河路1号', phone: '0432-62405406' },
-    { id: 'jl-5', name: '吉林饲料企业', type: 'feed', region: 'jilin', price: 1965, change: 0.2, monthlyVolume: 7.4, yearlyVolume: 74, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '长春市绿园区青年路1号', phone: '0431-87626666' },
-    { id: 'jl-6', name: '松原粮食贸易', type: 'trader', region: 'jilin', price: 1952, change: 0.0, monthlyVolume: 6.8, yearlyVolume: 68, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '松原市宁江区朝阳街1号', phone: '0438-6666666' },
-    { id: 'jl-7', name: '长春粮食贸易', type: 'trader', region: 'jilin', price: 1962, change: 0.1, monthlyVolume: 10.3, yearlyVolume: 103, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '长春市南关区南湖大路1号', phone: '0431-85607700' },
+    { id: 'jl-1', name: '中粮公主岭', type: 'ethanol', region: 'jilin', price: 1960, change: 0.5, monthlyVolume: 15.2, yearlyVolume: 152, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, parentCompany: '中粮', address: '长春市公主岭市', phone: '0434-6666666' },
+    { id: 'jl-2', name: '中粮榆树', type: 'ethanol', region: 'jilin', price: 1955, change: 0.3, monthlyVolume: 12.5, yearlyVolume: 125, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, parentCompany: '中粮', address: '长春市榆树市', phone: '0431-82526126' },
+    { id: 'jl-3', name: '四平天成', type: 'ethanol', region: 'jilin', price: 1958, change: -0.2, monthlyVolume: 12.8, yearlyVolume: 128, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '四平市铁东区', phone: '0434-3666666' },
+    { id: 'jl-4', name: '松原嘉吉生化', type: 'ethanol', region: 'jilin', price: 1950, change: -0.4, monthlyVolume: 8.6, yearlyVolume: 86, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '松原市前郭县', phone: '0438-3666666' },
+    { id: 'jl-5', name: '吉林燃料乙醇', type: 'ethanol', region: 'jilin', price: 1965, change: 0.2, monthlyVolume: 7.4, yearlyVolume: 74, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '吉林市龙潭区', phone: '0432-62405406' },
+    { id: 'jl-6', name: '正大德惠', type: 'feed', region: 'jilin', price: 1952, change: 0.0, monthlyVolume: 6.8, yearlyVolume: 68, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '长春市德惠市', phone: '0431-87626666' },
+    { id: 'jl-7', name: '家佳康', type: 'feed', region: 'jilin', price: 1962, change: 0.1, monthlyVolume: 10.3, yearlyVolume: 103, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, address: '长春市朝阳区', phone: '0431-85607700' },
+    { id: 'jl-8', name: '中储粮吉林分公司', type: 'trader', region: 'jilin', price: 1960, change: 0.2, monthlyVolume: 14.5, yearlyVolume: 145, lastUpdate: new Date().toISOString().split('T')[0], isKeyMonitored: true, parentCompany: '中储粮', address: '长春市建设街2650号', phone: '0431-82526126' },
   ],
   // 注：锦州港是中国重要的粮食出口港口，玉米价格对国际市场有重要参考价值
   liaoning: [
