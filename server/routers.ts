@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { scraperExecutionRouter } from "./routers/scraperExecution";
 
 export const appRouter = router({
   system: systemRouter,
@@ -57,6 +58,7 @@ export const appRouter = router({
       const { deleteScraperConfig } = await import('./db');
       return deleteScraperConfig(input.id);
     }),
+    execution: scraperExecutionRouter,
   }),
 });
 
