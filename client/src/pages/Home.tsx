@@ -20,6 +20,8 @@ import { PriceChart } from '@/components/PriceChart';
 import FuturesPriceCard from '@/components/FuturesPriceCard';
 import PriceComparison from '@/components/PriceComparison';
 import PriceAnalysisCard from '@/components/PriceAnalysisCard';
+import { EnterprisScraperConfig } from '@/components/EnterprisScraperConfig';
+import { getEnterpriseFullName } from '@/lib/enterpriseNames';
 import {
   getRegionData,
   getEnterpriseDetail,
@@ -311,6 +313,12 @@ export default function Home() {
 
                 {/* 企业信息 */}
                 <div className="bg-accent/10 border border-accent rounded-lg p-4 space-y-2">
+                  <p className="text-sm">
+                    <span className="font-semibold text-card-foreground">企业全称：</span>
+                    <span className="text-muted-foreground ml-2">
+                      {getEnterpriseFullName(enterpriseDetail.id)}
+                    </span>
+                  </p>
                   {enterpriseDetail.parentCompany && (
                     <p className="text-sm">
                       <span className="font-semibold text-card-foreground">母公司：</span>
@@ -343,6 +351,15 @@ export default function Home() {
                   title={`${enterpriseDetail.name} - 30日价格趋势`}
                   height={300}
                 />
+
+                {/* 爆虫配置面板 */}
+                {isAuthenticated && (
+                  <EnterprisScraperConfig
+                    enterprise={enterpriseDetail}
+                    region={selectedRegion || ''}
+                    grainType={selectedGrain}
+                  />
+                )}
               </div>
             )}
           </div>

@@ -5,6 +5,7 @@
 
 import { ArrowDown, ArrowUp, ChevronRight } from 'lucide-react';
 import { Enterprise, ENTERPRISE_TYPES } from '@/lib/data';
+import { getEnterpriseFullName } from '@/lib/enterpriseNames';
 
 interface FactoryListProps {
   factories: Enterprise[];
@@ -29,9 +30,12 @@ export function FactoryList({ factories, onFactoryClick }: FactoryListProps) {
           >
             {/* 左侧：企业名称和类型 */}
             <div className="flex-1">
-              <h4 className="font-semibold text-card-foreground">
-                {factory.name}
+              <h4 className="font-semibold text-card-foreground text-sm">
+                {getEnterpriseFullName(factory.id)}
               </h4>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {factory.name}
+              </p>
               <div className="flex items-center gap-2 mt-1">
                 <span className={`text-xs font-semibold px-2 py-1 rounded ${
                   ENTERPRISE_TYPES[factory.type].color
